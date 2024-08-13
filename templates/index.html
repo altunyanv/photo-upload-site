@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <style>
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .preview {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 150px;
+            max-height: 150px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        .preview img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Image Files</h1>
+    <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="files" accept="image/*" multiple onchange="previewFiles()">
+        <input type="submit" value="Upload">
+    </form>
+
+    <div class="preview-container" id="preview"></div>
+
+    <div id="modal" class="modal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modalImage" src="">
+    </div>
+
+    <script>
+        let filesArray = [];
+
+        function previewFiles() {
+            const preview = document.getElementById('preview');
+            const files = document.querySelector('input[type=file]').files;
+
+            filesArray = Array.from(files); // Store files in array for easy manipulation
+            preview.innerHTML = ''; // Clear any existing previews
+
+            filesArray.forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const div = document.createElement('div');
+                        div.classList.add('preview');
+                        div.innerHTML = `
+                            <img src="${event.target.result}" onclick="openModal('${event.target.result}')">
+                            <button class="remove-btn" onclick="removeFile(${index})">&times;</button>
+                        `;
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.innerHTML += `<p>${file.name} is not an image file.</p>`;
+                }
+            });
+        }
+
+        function removeFile(index) {
+            filesArray.splice(index, 1); // Remove the file from array
+            document.querySelector('input[type=file]').files = createFileList(filesArray); // Update the file input
+            previewFiles(); // Re-render the preview
+        }
+
+        function createFileList(files) {
+            const dataTransfer = new DataTransfer();
+            files.forEach(file => dataTransfer.items.add(file));
+            return dataTransfer.files;
+        }
+
+        function openModal(imageSrc) {
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
