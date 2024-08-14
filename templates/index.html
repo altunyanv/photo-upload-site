@@ -3,12 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
+    <title>Wedding Photo Upload</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        body {
+            font-family: 'Lora', serif;
+            background-color: #f9f4f4;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: #c77d74;
+            margin-bottom: 20px;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        input[type="file"] {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            border: none;
+            background: none;
+            color: #c77d74;
+            cursor: pointer;
+            font-family: 'Lora', serif;
+        }
+        input[type="submit"] {
+            background-color: #c77d74;
+            color: #ffffff;
+            font-family: 'Lora', serif;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #a95d58;
+        }
         .preview-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
+            justify-content: center;
         }
         .preview {
             position: relative;
@@ -17,30 +63,41 @@
             justify-content: center;
             max-width: 150px;
             max-height: 150px;
-            border: 1px solid #ddd;
+            border: 2px solid #e1c4c4;
+            border-radius: 8px;
             padding: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             cursor: pointer;
+            background-color: #fff;
+            transition: transform 0.3s;
+        }
+        .preview:hover {
+            transform: scale(1.05);
         }
         .preview img {
             max-width: 100%;
             max-height: 100%;
+            border-radius: 5px;
         }
         .remove-btn {
             position: absolute;
             top: 5px;
             right: 5px;
-            background-color: rgba(255, 0, 0, 0.7);
+            background-color: rgba(199, 125, 116, 0.8);
             color: white;
             border: none;
             border-radius: 50%;
             cursor: pointer;
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.3s;
+        }
+        .remove-btn:hover {
+            background-color: rgba(199, 125, 116, 1);
         }
         .modal {
             display: none;
@@ -53,23 +110,30 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 20px;
         }
         .modal img {
             max-width: 90%;
             max-height: 90%;
+            border-radius: 8px;
         }
         .modal-close {
             position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 30px;
+            top: 20px;
+            right: 40px;
+            font-size: 40px;
             color: white;
             cursor: pointer;
+            font-family: 'Lora', serif;
+            transition: color 0.3s;
+        }
+        .modal-close:hover {
+            color: #c77d74;
         }
     </style>
 </head>
 <body>
-    <h1>Upload Image Files</h1>
+    <h1>Wedding Photo Upload</h1>
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
         <input type="file" name="files" accept="image/*" multiple onchange="previewFiles()">
         <input type="submit" value="Upload">
@@ -89,8 +153,8 @@
             const preview = document.getElementById('preview');
             const files = document.querySelector('input[type=file]').files;
 
-            filesArray = Array.from(files); // Store files in array for easy manipulation
-            preview.innerHTML = ''; // Clear any existing previews
+            filesArray = Array.from(files);
+            preview.innerHTML = '';
 
             filesArray.forEach((file, index) => {
                 if (file.type.startsWith('image/')) {
@@ -112,9 +176,9 @@
         }
 
         function removeFile(index) {
-            filesArray.splice(index, 1); // Remove the file from array
-            document.querySelector('input[type=file]').files = createFileList(filesArray); // Update the file input
-            previewFiles(); // Re-render the preview
+            filesArray.splice(index, 1);
+            document.querySelector('input[type=file]').files = createFileList(filesArray);
+            previewFiles();
         }
 
         function createFileList(files) {
