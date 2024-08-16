@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding Photo Upload</title>
+    <title>Wedding Album</title>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -49,6 +49,16 @@
         }
         input[type="submit"]:hover {
             background-color: #a95d58;
+        }
+        .album-container {
+            margin: 20px auto;
+            max-width: 400px;
+            text-align: center;
+        }
+        .album-title {
+            font-size: 1.5rem;
+            color: #c77d74;
+            margin-top: 10px;
         }
         .preview-container {
             display: flex;
@@ -130,10 +140,25 @@
         .modal-close:hover {
             color: #c77d74;
         }
+        .note {
+            font-size: 1rem;
+            color: #555;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
-    <h1>Wedding Photo Upload</h1>
+    <h1>Our Wedding Album</h1>
+
+    <div class="album-container">
+        <div class="album-title">View Our <a href="https://1drv.ms/f/s!AoCT1FC04tH65yzdcAFlmp_X_g4C?e=XA0Hu8" class="album-link" target="_blank">Wedding Album</a></div>
+    </div>
+
+    <div class="note">
+        <p>We'd love for you to contribute the photos you took during the wedding! Please note that the synchronization of your photos to the album won't be done instantly, so they may take some time to appear.</p>
+    </div>
+
     <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data">
         <input type="file" name="files" accept="image/*" multiple onchange="previewFiles()">
         <input type="submit" value="Upload">
